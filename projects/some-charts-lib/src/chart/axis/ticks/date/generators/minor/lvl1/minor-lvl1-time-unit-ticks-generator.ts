@@ -1,37 +1,47 @@
-import {Range} from "../../../../../../../geometry";
-import {TimeUnit} from "../../../time-unit";
-import * as moment from "moment";
-import { MinorTicksGenerator } from "../../../../minor-ticks-generator";
-import { Tick } from "../../../../tick";
-import {MinorDateTick} from "../../../minor-date-tick";
+import { Range } from '../../../../../../../geometry';
+import { TimeUnit } from '../../../time-unit';
+import * as moment from 'moment';
+import { MinorTicksGenerator } from '../../../../minor-ticks-generator';
+import { Tick } from '../../../../tick';
+import { MinorDateTick } from '../../../minor-date-tick';
 
-export abstract class MinorLvl1TimeUnitTicksGenerator implements MinorTicksGenerator<Date> {
+export abstract class MinorLvl1TimeUnitTicksGenerator
+    implements MinorTicksGenerator<Date>
+{
+    private tickHeight: number;
 
-  private tickHeight: number;
+    constructor(tickHeight: number) {
+        this.tickHeight = tickHeight;
+    }
 
-  constructor(tickHeight: number) {
-    this.tickHeight = tickHeight;
-  }
+    generateTicks(range: Range<Date>, majorTicks: Tick<Date>[]): Tick<Date>[] {
+        let min = moment(range.min).startOf(this.timeUnit);
+        let max = moment(range.max).endOf(this.timeUnit);
 
-  generateTicks(range: Range<Date>, majorTicks: Tick<Date>[]): Tick<Date>[] {
-    let min = moment(range.min).startOf(this.timeUnit);
-    let max = moment(range.max).endOf(this.timeUnit);
+        let x = min;
 
-    let x = min;
+        let till = max.clone().add(1, this.timeUnit);
 
-    let till = max.clone().add(1, this.timeUnit);
+        let ticks = [];
 
-    let ticks = [];
+        do {
+            ticks.push(
+                new MinorDateTick(
+                    x.toDate(),
+                    this.tickHeight,
+                    0,
+                    this.getTimeUnitValueAsString(x),
+                    1,
+                    'middle',
+                ),
+            );
+            x.add(1, this.timeUnit);
+        } while (x.isSameOrBefore(till));
 
-    do {
-      ticks.push(new MinorDateTick(x.toDate(), this.tickHeight, 0, this.getTimeUnitValueAsString(x), 1, 'middle'));
-      x.add(1, this.timeUnit);
-    } while (x.isSameOrBefore(till));
+        return ticks;
+    }
 
-    return ticks;
-  }
+    abstract get timeUnit(): TimeUnit;
 
-  abstract get timeUnit(): TimeUnit;
-
-  protected abstract getTimeUnitValueAsString(date: moment.Moment): string;
+    protected abstract getTimeUnitValueAsString(date: moment.Moment): string;
 }

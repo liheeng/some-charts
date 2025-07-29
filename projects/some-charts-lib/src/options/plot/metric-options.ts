@@ -1,17 +1,17 @@
-import {Palette} from "../../chart/plots";
-import {Color} from "../../color";
+import { Palette } from '../../chart/plots';
+import { Color } from '../../color';
 
 export interface MetricOptions<ColorType extends Color | Palette> {
-  /**
-   * Metric id.
-   * */
-  id: string;
-  /**
-   * Metric caption.
-   * */
-  caption: string;
-  /**
-   * Metric color or palette (see {@link Color} and {@link Palette}).
-   * */
-  color: ColorType
+    /**
+     * Metric id.
+     * */
+    id: string;
+    /**
+     * Metric caption.
+     * */
+    caption: string;
+    /**
+     * Metric color or palette (see {@link Color} and {@link Palette}).
+     * */
+    color: ColorType;
 }

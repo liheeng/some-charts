@@ -1,38 +1,43 @@
-import {OptionsDefaults, SkinOptions} from "./options-defaults";
-import {Skin} from "./skin";
+import { OptionsDefaults, SkinOptions } from './options-defaults';
+import { Skin } from './skin';
 
 /**
-* Chart renderer options
-*/
+ * Chart renderer options
+ */
 export interface RendererOptions extends SkinOptions {
-  /**
-   * Renderer background color.
-   */
-  backgroundColor?: string;
-  /**
-   * Renderer border style.
-   */
-  borderStyle?: string;
+    /**
+     * Renderer background color.
+     */
+    backgroundColor?: string;
+    /**
+     * Renderer border style.
+     */
+    borderStyle?: string;
 }
 
-export class RendererOptionsDefaults extends OptionsDefaults<RendererOptions, undefined, RendererOptions>
-{
-  protected constructor() {
-    super();
-  }
-
-  majorOptions = undefined;
-
-  protected readonly skins: { [key: string]: RendererOptions } = {
-    [Skin.Default]: {
-      backgroundColor: this.defaultSkinConsts.backgroundColor,
-      borderStyle: `none`
-    },
-    [Skin.Dark]: {
-      backgroundColor: this.darkSkinConsts.backgroundColor,
-      borderStyle: this.darkSkinConsts.outerBorderColor ? `1px solid ${this.darkSkinConsts.outerBorderColor}`: undefined
+export class RendererOptionsDefaults extends OptionsDefaults<
+    RendererOptions,
+    undefined,
+    RendererOptions
+> {
+    protected constructor() {
+        super();
     }
-  }
 
-  public static readonly Instance = new RendererOptionsDefaults();
+    majorOptions = undefined;
+
+    protected readonly skins: { [key: string]: RendererOptions } = {
+        [Skin.Default]: {
+            backgroundColor: this.defaultSkinConsts.backgroundColor,
+            borderStyle: `none`,
+        },
+        [Skin.Dark]: {
+            backgroundColor: this.darkSkinConsts.backgroundColor,
+            borderStyle: this.darkSkinConsts.outerBorderColor
+                ? `1px solid ${this.darkSkinConsts.outerBorderColor}`
+                : undefined,
+        },
+    };
+
+    public static readonly Instance = new RendererOptionsDefaults();
 }

@@ -1,15 +1,15 @@
-﻿import {Range} from "./range"
+﻿import { Range } from './range';
 
 export class NumericRange extends Range<number> {
-  constructor(min: number, max: number) {
-    super(min, max);
-  }
+    constructor(min: number, max: number) {
+        super(min, max);
+    }
 
-  public getLength() {
-    return this.max - this.min;
-  }
+    public getLength() {
+        return this.max - this.min;
+    }
 
-  public withShift(offset: number): NumericRange {
-    return new NumericRange(this.min + offset, this.max + offset)
-  }
+    public withShift(offset: number): NumericRange {
+        return new NumericRange(this.min + offset, this.max + offset);
+    }
 }

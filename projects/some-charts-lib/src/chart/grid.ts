@@ -1,169 +1,182 @@
-﻿import Konva from "konva";
-import merge from "lodash-es/merge";
-import {ChartRenderableItem} from "./chart-renderable-item";
-import {NumericPoint, Size} from "../geometry";
-import {GridOptions, GridOptionsDefaults} from "../options";
-import {MathHelper} from "../services";
-import {LayerId} from "../layer-id";
-import {cloneDeep} from "lodash-es";
+﻿import Konva from 'konva';
+import merge from 'lodash-es/merge';
+import { ChartRenderableItem } from './chart-renderable-item';
+import { NumericPoint, Size } from '../geometry';
+import { GridOptions, GridOptionsDefaults } from '../options';
+import { MathHelper } from '../services';
+import { LayerId } from '../layer-id';
+import { cloneDeep } from 'lodash-es';
 
 export class Grid extends ChartRenderableItem<Konva.Shape> {
+    protected layerId: string;
 
-  protected layerId: string;
+    private location: NumericPoint;
+    private size: Size;
 
-  private location: NumericPoint;
-  private size: Size;
+    protected horizontalLinesCoords: number[];
+    protected verticalLinesCoords: number[];
 
-  protected horizontalLinesCoords: number[];
-  protected verticalLinesCoords: number[];
+    private compositeShape: Konva.Shape;
+    private borderShape: Konva.Shape;
 
-  private compositeShape: Konva.Shape;
-  private borderShape: Konva.Shape;
+    private options: GridOptions;
 
-  private options: GridOptions;
+    /**
+     * Creates new instance of grid. Grid is grid net on chart's plot area.
+     * @param {NumericPoint} location - Grid location on renderer.
+     * @param {Size} size - Grid size.
+     * @param {GridOptions} options - Grid options object.
+     */
+    constructor(location: NumericPoint, size: Size, options?: GridOptions) {
+        super();
+        this.location = location;
+        this.size = size;
 
-  /**
-   * Creates new instance of grid. Grid is grid net on chart's plot area.
-   * @param {NumericPoint} location - Grid location on renderer.
-   * @param {Size} size - Grid size.
-   * @param {GridOptions} options - Grid options object.
-   */
-  constructor(location: NumericPoint, size: Size, options?: GridOptions) {
-    super();
-    this.location = location;
-    this.size = size;
+        this.options = GridOptionsDefaults.Instance.extendWith(options);
 
-    this.options = GridOptionsDefaults.Instance.extendWith(options);
+        this.horizontalLinesCoords = [];
+        this.verticalLinesCoords = [];
 
-    this.horizontalLinesCoords = [];
-    this.verticalLinesCoords = [];
+        let grid = this;
 
-    let grid = this;
+        this.compositeShape = new Konva.Shape({
+            location: grid.location,
+            size: grid.size,
+            horizontalLinesCoords: grid.horizontalLinesCoords,
+            verticalLinesCoords: grid.verticalLinesCoords,
+            sceneFunc: function (context, shape) {
+                context.save();
 
-    this.compositeShape = new Konva.Shape({
-      location: grid.location,
-      size: grid.size,
-      horizontalLinesCoords: grid.horizontalLinesCoords,
-      verticalLinesCoords: grid.verticalLinesCoords,
-      sceneFunc: function (context, shape) {
+                context.setAttr('fillStyle', grid.options.backgroundColor);
+                context.setAttr('strokeStyle', grid.options.foregroundColor);
+                context.setAttr('lineWidth', 0.5);
 
-        context.save();
+                let horizontalLines = grid.horizontalLinesCoords;
+                let verticalLines = grid.verticalLinesCoords;
 
-        context.setAttr('fillStyle', grid.options.backgroundColor);
-        context.setAttr('strokeStyle', grid.options.foregroundColor);
-        context.setAttr('lineWidth', 0.5);
+                let location = grid.location;
+                let size = grid.size;
 
-        let horizontalLines = grid.horizontalLinesCoords;
-        let verticalLines = grid.verticalLinesCoords;
+                let width = size.width;
+                let height = size.height;
 
-        let location = grid.location;
-        let size = grid.size;
+                context.save();
+                context.beginPath();
+                context.rect(location.x, location.y, width, height);
+                context.clip();
 
-        let width = size.width;
-        let height = size.height;
+                if (horizontalLines != null) {
+                    for (let i = 0; i < horizontalLines.length; i++) {
+                        let tick = horizontalLines[i];
 
-        context.save();
-        context.beginPath();
-        context.rect(location.x, location.y, width, height);
-        context.clip();
+                        let start = new NumericPoint(
+                            MathHelper.optimizeValue(location.x),
+                            MathHelper.optimizeValue(location.y + tick),
+                        );
 
-        if (horizontalLines != null) {
-          for (let i = 0; i < horizontalLines.length; i++) {
-            let tick = horizontalLines[i];
+                        let stop = new NumericPoint(
+                            MathHelper.optimizeValue(location.x + size.width),
+                            MathHelper.optimizeValue(location.y + tick),
+                        );
 
-            let start = new NumericPoint(
-              MathHelper.optimizeValue(location.x),
-              MathHelper.optimizeValue(location.y + tick));
+                        context.moveTo(start.x, start.y);
+                        context.lineTo(stop.x, stop.y);
+                    }
+                }
 
-            let stop = new NumericPoint(
-              MathHelper.optimizeValue(location.x + size.width),
-              MathHelper.optimizeValue(location.y + tick));
+                if (verticalLines != null) {
+                    for (let i = 0; i < verticalLines.length; i++) {
+                        let tick = verticalLines[i];
 
-            context.moveTo(start.x, start.y);
-            context.lineTo(stop.x, stop.y);
-          }
-        }
+                        let start = new NumericPoint(
+                            MathHelper.optimizeValue(location.x + tick),
+                            MathHelper.optimizeValue(location.y),
+                        );
 
-        if (verticalLines != null) {
-          for (let i = 0; i < verticalLines.length; i++) {
-            let tick = verticalLines[i];
+                        let stop = new NumericPoint(
+                            MathHelper.optimizeValue(location.x + tick),
+                            MathHelper.optimizeValue(location.y + size.height),
+                        );
 
-            let start = new NumericPoint(
-              MathHelper.optimizeValue(location.x + tick),
-              MathHelper.optimizeValue(location.y));
+                        context.moveTo(start.x, start.y);
+                        context.lineTo(stop.x, stop.y);
+                    }
+                }
 
-            let stop = new NumericPoint(
-              MathHelper.optimizeValue(location.x + tick),
-              MathHelper.optimizeValue(location.y + size.height));
+                context.stroke();
+                context.restore();
+            },
+        });
 
-            context.moveTo(start.x, start.y);
-            context.lineTo(stop.x, stop.y);
-          }
-        }
+        this.borderShape = new Konva.Shape({
+            location: grid.location,
+            size: grid.size,
+            sceneFunc: function (context, shape) {
+                context.save();
 
-        context.stroke();
-        context.restore();
-      }
-    });
+                context.setAttr('fillStyle', grid.options.backgroundColor);
+                context.setAttr('strokeStyle', grid.options.foregroundColor);
+                context.setAttr('lineWidth', 1);
 
-    this.borderShape = new Konva.Shape({
-      location: grid.location,
-      size: grid.size,
-      sceneFunc: function (context, shape) {
+                let location = grid.location;
+                let size = grid.size;
+                context.strokeRect(
+                    location.x,
+                    location.y,
+                    size.width,
+                    size.height,
+                );
+                context.fillRect(
+                    location.x,
+                    location.y,
+                    size.width,
+                    size.height,
+                );
 
-        context.save();
+                context.restore();
+            },
+        });
 
-        context.setAttr('fillStyle', grid.options.backgroundColor);
-        context.setAttr('strokeStyle', grid.options.foregroundColor);
-        context.setAttr('lineWidth', 1);
+        this.layerId = LayerId.Chart;
+        this.konvaDrawables = [this.borderShape, this.compositeShape];
+    }
 
-        let location = grid.location;
-        let size = grid.size;
-        context.strokeRect(location.x, location.y, size.width, size.height);
-        context.fillRect(location.x, location.y, size.width, size.height);
+    /**
+     * Uprates grid's state.
+     * @param {NumericPoint} location - Grid location on renderer.
+     * @param {Size} size - Grid size.
+     */
+    update(location: NumericPoint, size: Size) {
+        this.location = location;
+        this.size = size;
+        this.updateGridShapes();
+    }
 
-        context.restore();
-      }
-    });
+    /**
+     * Uprates grid's horizontal and vertical lines.
+     * @param {Array<number>} horizontalLinesCoords - Grid's horizontal lines Y coordinates.
+     * @param {Array<number>} verticalLinesCoords - Grid's vertical lines X coordinates.
+     * */
+    setLinesCoords(
+        horizontalLinesCoords: Array<number>,
+        verticalLinesCoords: Array<number>,
+    ) {
+        this.horizontalLinesCoords = horizontalLinesCoords;
+        this.verticalLinesCoords = verticalLinesCoords;
+        this.updateGridShapes();
+    }
 
-    this.layerId = LayerId.Chart;
-    this.konvaDrawables = [this.borderShape, this.compositeShape];
-  }
+    private updateGridShapes() {
+        this.compositeShape.setAttrs({
+            location: this.location,
+            size: this.size,
+            horizontalLinesCoords: this.horizontalLinesCoords,
+            verticalLinesCoords: this.verticalLinesCoords,
+        });
 
-  /**
-   * Uprates grid's state.
-   * @param {NumericPoint} location - Grid location on renderer.
-   * @param {Size} size - Grid size.
-   */
-  update(location: NumericPoint, size: Size) {
-    this.location = location;
-    this.size = size;
-    this.updateGridShapes();
-  }
-
-  /**
-   * Uprates grid's horizontal and vertical lines.
-   * @param {Array<number>} horizontalLinesCoords - Grid's horizontal lines Y coordinates.
-   * @param {Array<number>} verticalLinesCoords - Grid's vertical lines X coordinates.
-   * */
-  setLinesCoords(horizontalLinesCoords: Array<number>,
-                 verticalLinesCoords: Array<number>) {
-    this.horizontalLinesCoords = horizontalLinesCoords;
-    this.verticalLinesCoords = verticalLinesCoords;
-    this.updateGridShapes();
-  }
-
-  private updateGridShapes() {
-    this.compositeShape.setAttrs({
-      location: this.location,
-      size: this.size,
-      horizontalLinesCoords: this.horizontalLinesCoords,
-      verticalLinesCoords: this.verticalLinesCoords
-    });
-
-    this.borderShape.setAttrs({
-      location: this.location,
-      size: this.size
-    });
-  }
+        this.borderShape.setAttrs({
+            location: this.location,
+            size: this.size,
+        });
+    }
 }

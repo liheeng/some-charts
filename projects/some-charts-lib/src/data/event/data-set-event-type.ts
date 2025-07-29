@@ -1,3 +1,3 @@
 export enum DataSetEventType {
-  Changed = 'changed'
+    Changed = 'changed',
 }

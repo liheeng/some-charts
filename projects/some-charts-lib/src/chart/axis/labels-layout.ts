@@ -1,5 +1,5 @@
 export enum LabelsLayout {
-  OK = 0,
-  TooFar = 1,
-  TooClose = 2
+    OK = 0,
+    TooFar = 1,
+    TooClose = 2,
 }

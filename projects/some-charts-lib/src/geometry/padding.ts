@@ -1,4 +1,3 @@
-import {Margin} from "./margin";
+import { Margin } from './margin';
 
 export type Padding = Margin;
-

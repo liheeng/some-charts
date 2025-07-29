@@ -1,7 +1,7 @@
-﻿import {Palette} from "../plots";
-import {Color} from "../../color";
+﻿import { Palette } from '../plots';
+import { Color } from '../../color';
 
 export interface LegendItem {
-  caption: string;
-  color: Color | Palette;
+    caption: string;
+    color: Color | Palette;
 }

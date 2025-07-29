@@ -1,24 +1,23 @@
-import {CoordinateTransformation} from "./coordinate-transformation";
+import { CoordinateTransformation } from './coordinate-transformation';
 
 export class LogPointXTransformation implements CoordinateTransformation {
+    constructor(private base: number) {
+        this.base = base;
+    }
 
-  constructor(private base: number) {
-    this.base = base;
-  }
+    applyX(x: number): number {
+        return Math.log10(x);
+    }
 
-  applyX(x: number): number {
-    return Math.log10(x);
-  }
+    applyY(y: number): number {
+        return y;
+    }
 
-  applyY(y: number): number {
-    return y;
-  }
+    unapplyX(x: number): number {
+        return this.base ** x;
+    }
 
-  unapplyX(x: number): number {
-    return this.base ** x;
-  }
-
-  unapplyY(y: number): number {
-    return y;
-  }
+    unapplyY(y: number): number {
+        return y;
+    }
 }

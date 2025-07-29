@@ -1,4 +1,4 @@
 export enum FontUnits {
-  Pixels = 'px',
-  Points = 'pt'
+    Pixels = 'px',
+    Points = 'pt',
 }

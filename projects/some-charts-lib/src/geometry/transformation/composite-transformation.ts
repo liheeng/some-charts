@@ -1,40 +1,41 @@
-import {CoordinateTransformation} from "./coordinate-transformation";
+import { CoordinateTransformation } from './coordinate-transformation';
 
 export class CompositeTransformation implements CoordinateTransformation {
-
-  constructor(private readonly transformations: Array<CoordinateTransformation>) {
-    this.transformations = transformations;
-  }
-
-  applyX(x: number): number {
-    let transformedX = x;
-    for (let transformation of this.transformations) {
-      transformedX = transformation.applyX(transformedX);
+    constructor(
+        private readonly transformations: Array<CoordinateTransformation>,
+    ) {
+        this.transformations = transformations;
     }
-    return transformedX;
-  }
 
-  applyY(y: number): number {
-    let transformedY = y;
-    for (let transformation of this.transformations) {
-      transformedY = transformation.applyY(transformedY);
+    applyX(x: number): number {
+        let transformedX = x;
+        for (let transformation of this.transformations) {
+            transformedX = transformation.applyX(transformedX);
+        }
+        return transformedX;
     }
-    return transformedY;
-  }
 
-  unapplyX(x: number): number {
-    let transformedX = x;
-    for (let transformation of this.transformations) {
-      transformedX = transformation.unapplyX(transformedX);
+    applyY(y: number): number {
+        let transformedY = y;
+        for (let transformation of this.transformations) {
+            transformedY = transformation.applyY(transformedY);
+        }
+        return transformedY;
     }
-    return transformedX;
-  }
 
-  unapplyY(y: number): number {
-    let transformedY = y;
-    for (let transformation of this.transformations) {
-      transformedY = transformation.unapplyY(transformedY);
+    unapplyX(x: number): number {
+        let transformedX = x;
+        for (let transformation of this.transformations) {
+            transformedX = transformation.unapplyX(transformedX);
+        }
+        return transformedX;
     }
-    return transformedY;
-  }
+
+    unapplyY(y: number): number {
+        let transformedY = y;
+        for (let transformation of this.transformations) {
+            transformedY = transformation.unapplyY(transformedY);
+        }
+        return transformedY;
+    }
 }

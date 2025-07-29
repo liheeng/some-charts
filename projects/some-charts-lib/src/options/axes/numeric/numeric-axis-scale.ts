@@ -1,8 +1,8 @@
-import {NumericAxisScaleType} from "./numeric-axis-scale-type";
+import { NumericAxisScaleType } from './numeric-axis-scale-type';
 
 export interface NumericAxisScale {
-  /**
-   * Numeric axis scale type.
-   * */
-  scaleType: NumericAxisScaleType
+    /**
+     * Numeric axis scale type.
+     * */
+    scaleType: NumericAxisScaleType;
 }

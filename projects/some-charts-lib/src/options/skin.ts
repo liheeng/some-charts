@@ -1,5 +1,5 @@
 export enum Skin {
-  Default = 'default',
-  Light = 'light',
-  Dark = 'dark'
+    Default = 'default',
+    Light = 'light',
+    Dark = 'dark',
 }

@@ -1,4 +1,4 @@
 export interface Font {
-  size: number,
-  family: string;
+    size: number;
+    family: string;
 }

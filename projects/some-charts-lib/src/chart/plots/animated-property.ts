@@ -1,94 +1,111 @@
-import {Color} from "../../color";
-import {NumericDataRect, NumericPoint, Range} from "../../geometry";
-import {Transition} from "../../transition";
+import { Color } from '../../color';
+import { NumericDataRect, NumericPoint, Range } from '../../geometry';
+import { Transition } from '../../transition';
 
-export class AnimatedProperty<PropertyType extends Color | number | NumericPoint | NumericDataRect | undefined> {
+export class AnimatedProperty<
+    PropertyType extends
+        | Color
+        | number
+        | NumericPoint
+        | NumericDataRect
+        | undefined,
+> {
+    private prevAnimationId: number | undefined;
+    private _animationId: number | undefined;
+    private _isAnimationInProcess: boolean;
 
-  private prevAnimationId: number | undefined;
-  private _animationId: number | undefined;
-  private _isAnimationInProcess: boolean;
+    private animationStartValue: PropertyType | undefined;
+    private animationEndValue: PropertyType | undefined;
 
-  private animationStartValue: PropertyType | undefined;
-  private animationEndValue: PropertyType | undefined;
+    private _displayedValue: PropertyType;
+    private _actualValue: PropertyType;
+    private _animationDuration: number | undefined;
 
-  private _displayedValue: PropertyType;
-  private _actualValue: PropertyType;
-  private _animationDuration: number | undefined;
+    private transition:
+        | Transition<Exclude<PropertyType, undefined>>
+        | undefined;
 
-  private transition: Transition<Exclude<PropertyType, undefined>> | undefined;
-
-  public get displayedValue(): PropertyType {
-    return this._displayedValue;
-  }
-
-  public get actualValue(): PropertyType {
-    return this._actualValue;
-  }
-
-  public get animationDuration(): number | undefined {
-    return this._animationDuration;
-  }
-
-  public get isAnimationInProcess(): boolean {
-    return this._isAnimationInProcess;
-  }
-
-  public get animationId(): number | undefined {
-    return this._animationId;
-  }
-
-  constructor(value: PropertyType) {
-    this._displayedValue = this._actualValue = value;
-    this._isAnimationInProcess = false;
-  }
-
-  setValue(value: PropertyType, animate: boolean = false, animationDuration: number = 800) {
-    this._actualValue = value;
-    if (!animate) {
-      if(this.isAnimationInProcess){
-        this.stopAnimation();
-      }
-      else {
-        this._displayedValue = value;
-      }
-    } else {
-      this._animationDuration = animationDuration;
-      this.startAnimation();
-    }
-  }
-
-  private stopAnimation(){
-    this.animationStartValue = undefined;
-    this.animationEndValue = undefined;
-    this._animationDuration = undefined
-    this._isAnimationInProcess = false;
-    this.transition = undefined;
-    this.prevAnimationId = this._animationId;
-    this._displayedValue = this._actualValue;
-  }
-
-  private startAnimation() {
-    this.animationStartValue = this._displayedValue;
-    this.animationEndValue = this._actualValue;
-    this._isAnimationInProcess = true;
-    this._animationId = this.prevAnimationId ? this.prevAnimationId + 1 : 1;
-    this.transition = new Transition<Exclude<PropertyType, undefined>>(new Range<Exclude<PropertyType, undefined>>(
-      this.animationStartValue as Exclude<PropertyType, undefined>,
-      this.animationEndValue as Exclude<PropertyType, undefined>));
-  }
-
-  tick(time: number | undefined) {
-
-    if (!this.isAnimationInProcess) {
-      throw new Error('Animation is not in process!');
+    public get displayedValue(): PropertyType {
+        return this._displayedValue;
     }
 
-    let passedTimeRatio = (time ?? this.animationDuration!) / this.animationDuration!;
-
-    if (passedTimeRatio >= 1) {
-      this.stopAnimation();
-    } else {
-      this._displayedValue = this.transition!.apply(new Range<number>(0, 1), passedTimeRatio);
+    public get actualValue(): PropertyType {
+        return this._actualValue;
     }
-  }
+
+    public get animationDuration(): number | undefined {
+        return this._animationDuration;
+    }
+
+    public get isAnimationInProcess(): boolean {
+        return this._isAnimationInProcess;
+    }
+
+    public get animationId(): number | undefined {
+        return this._animationId;
+    }
+
+    constructor(value: PropertyType) {
+        this._displayedValue = this._actualValue = value;
+        this._isAnimationInProcess = false;
+    }
+
+    setValue(
+        value: PropertyType,
+        animate: boolean = false,
+        animationDuration: number = 800,
+    ) {
+        this._actualValue = value;
+        if (!animate) {
+            if (this.isAnimationInProcess) {
+                this.stopAnimation();
+            } else {
+                this._displayedValue = value;
+            }
+        } else {
+            this._animationDuration = animationDuration;
+            this.startAnimation();
+        }
+    }
+
+    private stopAnimation() {
+        this.animationStartValue = undefined;
+        this.animationEndValue = undefined;
+        this._animationDuration = undefined;
+        this._isAnimationInProcess = false;
+        this.transition = undefined;
+        this.prevAnimationId = this._animationId;
+        this._displayedValue = this._actualValue;
+    }
+
+    private startAnimation() {
+        this.animationStartValue = this._displayedValue;
+        this.animationEndValue = this._actualValue;
+        this._isAnimationInProcess = true;
+        this._animationId = this.prevAnimationId ? this.prevAnimationId + 1 : 1;
+        this.transition = new Transition<Exclude<PropertyType, undefined>>(
+            new Range<Exclude<PropertyType, undefined>>(
+                this.animationStartValue as Exclude<PropertyType, undefined>,
+                this.animationEndValue as Exclude<PropertyType, undefined>,
+            ),
+        );
+    }
+
+    tick(time: number | undefined) {
+        if (!this.isAnimationInProcess) {
+            throw new Error('Animation is not in process!');
+        }
+
+        let passedTimeRatio =
+            (time ?? this.animationDuration!) / this.animationDuration!;
+
+        if (passedTimeRatio >= 1) {
+            this.stopAnimation();
+        } else {
+            this._displayedValue = this.transition!.apply(
+                new Range<number>(0, 1),
+                passedTimeRatio,
+            );
+        }
+    }
 }

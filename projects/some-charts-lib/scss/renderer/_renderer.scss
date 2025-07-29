@@ -1,18 +1,18 @@
 .sc-renderer {
-  position: relative;
-  cursor: pointer;
+    position: relative;
+    cursor: pointer;
 
-  &-move {
-    cursor: move;
-  }
+    &-move {
+        cursor: move;
+    }
 }
 
 .sc-renderer__back {
-  position: absolute;
-  z-index: 1000;
+    position: absolute;
+    z-index: 1000;
 }
 
 .sc-renderer__stage {
-  position: absolute;
-  z-index: 1001;
+    position: absolute;
+    z-index: 1001;
 }
