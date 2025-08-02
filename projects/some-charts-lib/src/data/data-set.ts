@@ -356,6 +356,7 @@ export class DataSet<
             if (
                 !dimensionXValuesMap.has(dimXValue.primitiveValue) &&
                 !isUndefined(dimensionXPrevMaxNumeric) &&
+                typeof dimXValue.primitiveValue === 'number' &&
                 dimXValue.primitiveValue < dimensionXPrevMaxNumeric
             ) {
                 throw new Error(errorTxt);
@@ -376,6 +377,7 @@ export class DataSet<
                     dimensionYValuesMap &&
                     !dimensionYValuesMap.has(dimYValue.primitiveValue) &&
                     dimensionYPrevMaxNumeric &&
+                    typeof dimYValue.primitiveValue === 'number' &&
                     dimYValue.primitiveValue < dimensionXPrevMaxNumeric
                 ) {
                     throw new Error(errorTxt);
