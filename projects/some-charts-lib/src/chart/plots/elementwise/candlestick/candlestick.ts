@@ -9,12 +9,12 @@ import { AnimatedProperty } from '../../animated-property';
 import { Color } from '../../../../color';
 import { Range } from '../../../../geometry';
 
-export class Stock extends PlotDrawableElement<Konva.Group> {
-    private readonly OHCLBarShape: Konva.Shape;
+export class Candlestick extends PlotDrawableElement<Konva.Group> {
+    private readonly CandlestickShape: Konva.Shape;
     private readonly fill: Color | Range<Color>;
     private readonly stroke: Color;
     private readonly lineWidth: number;
-    private readonly stockDataWidth: number;
+    private readonly candleWidth: number;
 
     private readonly relativeMinY: AnimatedProperty<number>;
     private readonly relativeMaxY: AnimatedProperty<number>;
@@ -33,32 +33,31 @@ export class Stock extends PlotDrawableElement<Konva.Group> {
     constructor(
         metricId: string,
         dataPoints: Array<NumericPoint>,
-                fill: Color | Range<Color>,
-                stroke: Color,
-                lineWidth: number,
-        stockDataWidth: number
+        stroke: Color,
+        lineWidth: number,
+        fill: Color | Range<Color>,
+        candleWidth: number
     ) {
         let root = new Konva.Group();
-        let boxCenter = Stock.calculateStockCenter(dataPoints);
+        let boxCenter = Candlestick.calculateStockCenter(dataPoints);
         super(metricId, boxCenter, root);
 
         this.fill = fill;
         this.stroke = stroke;
         this.lineWidth = lineWidth
-        this.stockDataWidth = stockDataWidth;
-
+        this.candleWidth = candleWidth;
 
         this.relativeOpenY = new AnimatedProperty<number>(dataPoints[0].y - boxCenter.y);
         this.relativeCloseY = new AnimatedProperty<number>(dataPoints[3].y - boxCenter.y);
         this.relativeMinY = new AnimatedProperty<number>(Math.min(...dataPoints.map(p => p.y)) - boxCenter.y);
         this.relativeMaxY = new AnimatedProperty<number>(Math.max(...dataPoints.map(p => p.y)) - boxCenter.y);
 
-        this.OHCLBarShape = new Konva.Shape({
+        this.CandlestickShape = new Konva.Shape({
             relativeOpenY: undefined,
             relativeCloseY: undefined,
             relativeHighY: undefined,
             relativeLowY: undefined,
-            barWidth: undefined,
+            candleWidth: undefined,
             sceneFunc: (context: Konva.Context, shape: Konva.Shape) => {
                 context.save();
 
@@ -95,7 +94,7 @@ export class Stock extends PlotDrawableElement<Konva.Group> {
             },
         });
 
-        root.add(this.OHCLBarShape);
+        root.add(this.CandlestickShape);
     }
 
     public setDataPoints(
@@ -103,7 +102,7 @@ export class Stock extends PlotDrawableElement<Konva.Group> {
         animate: boolean = false,
         animationDuration: number = 0,
     ) {
-        let boxCenter = Stock.calculateStockCenter(dataPoints)
+        let boxCenter = Candlestick.calculateStockCenter(dataPoints)
         this.dataPoint.setValue(boxCenter, animate, animationDuration);
         this.relativeOpenY.setValue(dataPoints[0].y - boxCenter.y, animate, animationDuration);
         this.relativeCloseY.setValue(dataPoints[3].y - boxCenter.y, animate, animationDuration);
@@ -153,19 +152,19 @@ export class Stock extends PlotDrawableElement<Konva.Group> {
 
         let stockWidthXMin = dataTransformation.getRelativeXValueLocationOnScreen(
             dataPoint,
-            dataPoint.x - this.stockDataWidth / 2,
+            dataPoint.x - this.candleWidth / 2,
             visible,
             screen,
         );
         let stockWidthXMax = dataTransformation.getRelativeXValueLocationOnScreen(
             dataPoint,
-            dataPoint.x + this.stockDataWidth / 2,
+            dataPoint.x + this.candleWidth / 2,
             visible,
             screen,
         );
         let barWidthOnScreen = stockWidthXMax - stockWidthXMin;
 
-        this.OHCLBarShape.setAttrs({
+        this.CandlestickShape.setAttrs({
             relativeOpenY: relativeOpenYOnScreen,
             relativeCloseY: relativeCloseYOnScreen,
             relativeHighY: relativeHighYOnScreen,
@@ -179,8 +178,8 @@ export class Stock extends PlotDrawableElement<Konva.Group> {
 
         let minY = this.relativeMinY.displayedValue + boxOrigin.y;
         let maxY = this.relativeMaxY.displayedValue + boxOrigin.y;
-        let minX = boxOrigin.x - this.stockDataWidth / 2;
-        let maxX = boxOrigin.x + this.stockDataWidth / 2;
+        let minX = boxOrigin.x - this.candleWidth / 2;
+        let maxX = boxOrigin.x + this.candleWidth / 2;
         return new NumericDataRect(minX, maxX, minY, maxY);
     }
 

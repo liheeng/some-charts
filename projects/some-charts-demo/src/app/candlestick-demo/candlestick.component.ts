@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
     AxisTypes,
-    BarsPlotOptions,
+    CandlestickPlotOptions,
     Chart,
     DataSet,
     Margin,
@@ -13,8 +13,8 @@ import { XY } from './model/x-y';
 import { MathHelperService } from '../services/math-helper.service';
 
 @Component({
-    selector: 'stock-demo',
-    templateUrl: './stock-demo.component.html',
+    selector: 'candlestick-demo',
+    templateUrl: './candlestick-demo.component.html',
 })
 export class CandlestickAxisComponent implements OnInit {
     constructor(private mathHelperService: MathHelperService) { }
@@ -89,20 +89,18 @@ export class CandlestickAxisComponent implements OnInit {
                 relativePadding: new Margin(0, 0.1, 0, 0.1),
             },
             header: {
-                text: 'Stock Plot',
+                text: 'Candlestick Plot',
             },
             plots: [
                 {
-                    kind: PlotKind.Bars,
-                    metrics: [
-                        {
-                            id: 'y',
-                            caption: 'Price',
-                            color: '#D24E4D',
-                        }
-                    ],
+                    kind: PlotKind.Candlestick,
+                    metric: {
+                        id: 'y',
+                        caption: 'Price',
+                        color: '#D24E4D',
+                    },
                     animate: true,
-                } as BarsPlotOptions,
+                } as CandlestickPlotOptions,
             ],
             axes: {
                 horizontal: {

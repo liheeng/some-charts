@@ -8,15 +8,15 @@ import {
 import { DataSet, DimensionValue } from '../../../../data';
 import { DataTransformation, NumericPoint } from '../../../../geometry';
 import { PlotDrawableElement } from '../plot-drawable-element';
-import { Stock } from './candlestick';
+import { Candlestick } from './candlestick';
 import { cloneDeep, uniq } from 'lodash-es';
 import { ElementwisePlot } from '../elementwise-plot';
 import { PlotErrorBuilder } from '../../plot-error-builder';
 
-export class StockPlot<
+export class CandlestickPlot<
     TItemType,
-    XDimensionType extends number | string | Date,
-    YDimensionType extends number | string | Date | undefined = undefined,
+    XDimensionType extends number | Date,
+    YDimensionType extends number | undefined = undefined,
 > extends ElementwisePlot<
     CandlestickPlotOptions,
     CandlestickPlotOptionsClass,
@@ -24,8 +24,7 @@ export class StockPlot<
     XDimensionType,
     YDimensionType
 > {
-    private boxDataWidth: number = 0;
-    private whiskersDataWidth: number = 0;
+    private candlestickWidth: number = 0;
 
     constructor(
         dataSet: DataSet<TItemType, XDimensionType, YDimensionType>,
@@ -42,8 +41,7 @@ export class StockPlot<
 
     override reinitOnDataSetUpdate() {
         let avgXDelta = this.getAvgXDelta(this.plotOptions.metric.id) ?? 0;
-        this.boxDataWidth = avgXDelta / 2.5;
-        this.whiskersDataWidth = avgXDelta / 3;
+        this.candlestickWidth = avgXDelta / 2.5;
     }
 
     protected add1DPlotElements(
@@ -51,7 +49,7 @@ export class StockPlot<
     ): [PlotDrawableElement] {
         let metricId = this.plotOptions.metric.id;
 
-        let boxColor = this.getColor(this.plotOptions.metric.color, xDimVal);
+        // let boxColor = this.getColor(this.plotOptions.metric.color, xDimVal);
         let metricValue = this.dataSet.getArrayMetricValue(
             metricId,
             xDimVal.value,
@@ -61,14 +59,13 @@ export class StockPlot<
             (y) => new NumericPoint(xDimVal.toNumericValue(), y),
         );
         return [
-            new Box(
+            new Candlestick(
                 metricId,
                 points,
-                boxColor,
                 this.plotOptions.stroke,
-                this.boxDataWidth,
-                this.whiskersDataWidth,
                 this.plotOptions.lineWidth,
+                this.plotOptions.fill,
+                this.candlestickWidth,
             ),
         ];
     }
@@ -88,7 +85,7 @@ export class StockPlot<
     ) {
         let metricId = this.plotOptions.metric.id;
 
-        let boxColor = this.getColor(this.plotOptions.metric.color, xDimVal);
+        // let boxColor = this.getColor(this.plotOptions.metric.color, xDimVal);
         let metricValue = this.dataSet.getArrayMetricValue(
             metricId,
             xDimVal.value,
@@ -97,17 +94,13 @@ export class StockPlot<
             (y) => new NumericPoint(xDimVal.toNumericValue(), y),
         );
 
-        let box = plotElt as Box;
-
-        if (boxColor && points) {
-            box.setDataPoints(
+        let candlestick = plotElt as Candlestick;
+        if (candlestick && points) {
+            candlestick.setDataPoints(
                 points,
                 this.plotOptions.animate,
                 this.plotOptions.animationDuration,
             );
-            box.fill = boxColor;
-            box.boxDataWidth = this.boxDataWidth;
-            box.whiskersDataWidth = this.whiskersDataWidth;
         }
     }
 

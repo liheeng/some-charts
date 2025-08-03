@@ -12,6 +12,7 @@ import {
 } from '../../options-defaults';
 import { Color } from '../../../color';
 import * as ColorObj from 'color';
+import { Range } from '../../../geometry';
 
 /**
  * Stock plot options
@@ -35,6 +36,11 @@ export interface CandlestickPlotSkin extends SkinOptions {
      * Color of plot stroke lines.
      **/
     stroke?: Color;
+
+    /**
+     * Fill color of the candles.
+     **/
+    fill?: Color | Range<Color>;
 }
 
 export class CandlestickPlotOptionsDefaults extends OptionsDefaults<
@@ -52,10 +58,14 @@ export class CandlestickPlotOptionsDefaults extends OptionsDefaults<
             stroke: new ColorObj(this.defaultSkinConsts.foregroundColor)
                 .darken(1.5)
                 .hex() as Color,
+            fill: new ColorObj(this.defaultSkinConsts.foregroundColor)
+                .darken(1.5)
+                .hex() as Color
         },
         [Skin.Dark]: {
             lineWidth: 2,
             stroke: this.darkSkinConsts.foregroundColor,
+            fill: this.darkSkinConsts.foregroundColor,
         },
     };
 
