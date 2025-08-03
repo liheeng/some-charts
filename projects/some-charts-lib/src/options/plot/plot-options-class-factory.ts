@@ -9,6 +9,10 @@ import {
     BoxPlotOptions,
     BoxPlotOptionsClass,
 } from './box';
+import {
+    CandlestickPlotOptions,
+    CandlestickPlotOptionsClass
+} from './candlestick';
 
 export class PlotOptionsClassFactory {
     static buildPlotOptionsClass(plotOptions: PlotOptions): PlotOptionsClass {
@@ -21,6 +25,10 @@ export class PlotOptionsClassFactory {
         } else if (plotOptions.kind === PlotKind.BoxOutliers) {
             return new BoxOutliersPlotOptionsClass(
                 plotOptions as BoxOutliersPlotOptions,
+            );
+        } else if (plotOptions.kind === PlotKind.Candlestick) {
+            return new CandlestickPlotOptionsClass(
+                plotOptions as CandlestickPlotOptions,
             );
         } else
             throw new Error(

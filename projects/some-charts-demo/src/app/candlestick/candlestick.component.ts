@@ -16,7 +16,7 @@ import { MathHelperService } from '../services/math-helper.service';
     selector: 'stock-demo',
     templateUrl: './stock-demo.component.html',
 })
-export class StockAxisComponent implements OnInit {
+export class CandlestickAxisComponent implements OnInit {
     constructor(private mathHelperService: MathHelperService) { }
 
     ngOnInit(): void {
@@ -82,7 +82,7 @@ export class StockAxisComponent implements OnInit {
 
         // setTimeout(updateDataSet, 4000);
 
-        let chart = new Chart<XY, string>('#chart-element', dataSet, {
+        let chart = new Chart<XY, number|Date>('#chart-element', dataSet, {
             skin: Skin.Light,
             navigation: {
                 isFitToViewModeEnabled: true,

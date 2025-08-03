@@ -18,4 +18,10 @@ export enum PlotKind {
      * See https://en.wikipedia.org/wiki/Box_plot and https://en.wikipedia.org/wiki/Outlier for more info.
      * */
     BoxOutliers = 'BoxOutliers',
+
+    /**
+     * 1D plot, for displaying candlestick chart for stock prices over time.
+     * See https://en.wikipedia.org/wiki/Candlestick_chart for more info.
+     * */
+    Candlestick = 'Candlestick',
 }

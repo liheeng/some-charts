@@ -11,6 +11,10 @@ import {
 } from './box';
 import { MarkerPlotOptions, MarkerPlotOptionsDefaults } from './marker';
 import { BarsPlotOptions, BarsPlotOptionsDefaults } from './bars';
+import {
+    CandlestickPlotOptions,
+    CandlestickPlotOptionsDefaults,
+} from './candlestick';
 
 export interface PlotOptions {
     /**
@@ -50,6 +54,11 @@ export class PlotOptionsDefaults {
         } else if (options.kind === PlotKind.Bars) {
             return BarsPlotOptionsDefaults.Instance.extendWith(
                 options as BarsPlotOptions,
+                skin,
+            );
+        } else if (options.kind === PlotKind.Candlestick) {
+            return CandlestickPlotOptionsDefaults.Instance.extendWith(
+                options as CandlestickPlotOptions,
                 skin,
             );
         } else

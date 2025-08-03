@@ -5,12 +5,15 @@ import {
     DataTransformation,
     NumericPoint,
 } from '../../../../geometry';
-import { StockStyle } from './stock-coloring';
 import { AnimatedProperty } from '../../animated-property';
+import { Color } from '../../../../color';
+import { Range } from '../../../../geometry';
 
 export class Stock extends PlotDrawableElement<Konva.Group> {
     private readonly OHCLBarShape: Konva.Shape;
-    private readonly stockStyle: StockStyle;
+    private readonly fill: Color | Range<Color>;
+    private readonly stroke: Color;
+    private readonly lineWidth: number;
     private readonly stockDataWidth: number;
 
     private readonly relativeMinY: AnimatedProperty<number>;
@@ -30,17 +33,21 @@ export class Stock extends PlotDrawableElement<Konva.Group> {
     constructor(
         metricId: string,
         dataPoints: Array<NumericPoint>,
-        stockStyle: StockStyle,
+                fill: Color | Range<Color>,
+                stroke: Color,
+                lineWidth: number,
         stockDataWidth: number
     ) {
         let root = new Konva.Group();
         let boxCenter = Stock.calculateStockCenter(dataPoints);
         super(metricId, boxCenter, root);
 
-        this.stockStyle = stockStyle;
+        this.fill = fill;
+        this.stroke = stroke;
+        this.lineWidth = lineWidth
         this.stockDataWidth = stockDataWidth;
 
-        
+
         this.relativeOpenY = new AnimatedProperty<number>(dataPoints[0].y - boxCenter.y);
         this.relativeCloseY = new AnimatedProperty<number>(dataPoints[3].y - boxCenter.y);
         this.relativeMinY = new AnimatedProperty<number>(Math.min(...dataPoints.map(p => p.y)) - boxCenter.y);
@@ -55,9 +62,9 @@ export class Stock extends PlotDrawableElement<Konva.Group> {
             sceneFunc: (context: Konva.Context, shape: Konva.Shape) => {
                 context.save();
 
-                context.setAttr('strokeStyle', this.stockStyle.stroke.toString());
-                context.setAttr('lineWidth', this.stockStyle.lineWidth);
-                context.setAttr('fillStyle', this.stockStyle.fillGradient);
+                context.setAttr('strokeStyle', this.stroke.toString());
+                context.setAttr('lineWidth', this.lineWidth);
+                context.setAttr('fillStyle', this.fill.toString());
 
                 let barWidth = shape.getAttr('barWidth');
                 let x = - barWidth / 2; // X position of the bar
@@ -157,7 +164,7 @@ export class Stock extends PlotDrawableElement<Konva.Group> {
             screen,
         );
         let barWidthOnScreen = stockWidthXMax - stockWidthXMin;
-            
+
         this.OHCLBarShape.setAttrs({
             relativeOpenY: relativeOpenYOnScreen,
             relativeCloseY: relativeCloseYOnScreen,
