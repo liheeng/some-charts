@@ -5,6 +5,7 @@ import { DateTimeAxisComponent } from './date-time-axis/date-time-axis.component
 import { BarsDemoComponent } from './bars-demo/bars-demo.component';
 import { BoxDemoComponent } from './box-demo/box-demo.component';
 import { LegendDemoComponent } from './chart/legend/legend-demo.component';
+import { CandlestickAxisComponent } from './candlestick-demo/candlestick.component';
 
 const routes: Routes = [
     {
@@ -22,6 +23,10 @@ const routes: Routes = [
     {
         path: 'box-demo',
         component: BoxDemoComponent,
+    },
+    {
+        path: 'candlestick-demo',
+        component: CandlestickAxisComponent,
     },
     {
         path: 'chart',

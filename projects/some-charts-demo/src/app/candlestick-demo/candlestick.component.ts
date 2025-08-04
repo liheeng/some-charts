@@ -24,11 +24,11 @@ export class CandlestickAxisComponent implements OnInit {
             [
                 {
                     x: new Date(2023, 0, 1),
-                    y: [10, 15, 5, 12],
+                    y: [10, 15, 5, 12], // open, high, low, close
                 },
                 {
                     x: new Date(2023, 0, 2),
-                    y: [20, 25, 15, 18],
+                    y: [20, 25, 15, 18], // open, high, low, close
                 },
                 {
                     x: new Date(2023, 0, 3),
@@ -99,7 +99,8 @@ export class CandlestickAxisComponent implements OnInit {
                         caption: 'Price',
                         color: '#D24E4D',
                     },
-                    animate: true,
+                    fill: '#D24E4D',
+                    animate: false,
                 } as CandlestickPlotOptions,
             ],
             axes: {

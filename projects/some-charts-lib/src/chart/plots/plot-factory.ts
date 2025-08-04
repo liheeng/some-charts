@@ -1,6 +1,6 @@
 import { Plot } from './plot';
 import { DataSet } from '../../data';
-import { BarsPlot, MarkerPlot, BoxPlot } from './elementwise';
+import { BarsPlot, MarkerPlot, BoxPlot, CandlestickPlot } from './elementwise';
 
 import {
     BarsPlotOptions,
@@ -9,6 +9,7 @@ import {
     PlotOptionsClass,
     PlotKind,
     BoxPlotOptions,
+    CandlestickPlotOptions,
 } from '../../options';
 
 import { DataTransformation } from '../../geometry';
@@ -58,6 +59,12 @@ export class PlotFactory {
                 dataSet,
                 dataTransformation,
                 <BoxOutliersPlotOptions>plotOptions,
+            );
+        } else if (plotOptions.kind === PlotKind.Candlestick) {
+            return new CandlestickPlot(
+                dataSet,
+                dataTransformation,
+                <CandlestickPlotOptions>plotOptions,
             );
         } else return undefined;
     }

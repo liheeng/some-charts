@@ -9,6 +9,7 @@ import { BarsDemoComponent } from './bars-demo/bars-demo.component';
 import { BoxDemoComponent } from './box-demo/box-demo.component';
 import { MathHelperService } from './services/math-helper.service';
 import { LegendDemoComponent } from './chart/legend/legend-demo.component';
+import { CandlestickAxisComponent } from './candlestick-demo/candlestick.component';
 
 @NgModule({
     declarations: [
@@ -17,6 +18,7 @@ import { LegendDemoComponent } from './chart/legend/legend-demo.component';
         DateTimeAxisComponent,
         BarsDemoComponent,
         BoxDemoComponent,
+        CandlestickAxisComponent,
         LegendDemoComponent,
     ],
     imports: [BrowserModule, AppRoutingModule],

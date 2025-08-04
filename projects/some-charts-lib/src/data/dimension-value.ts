@@ -31,7 +31,7 @@ export class DimensionValue<XDimensionType extends number | string | Date> {
     }
 
     public static getCompareFunc<XDimensionType extends number | string | Date>(
-        sorting: Sorting = Sorting.Asc,
+        sorting: Sorting = Sorting.None,
     ) {
         return function (
             left: DimensionValue<XDimensionType>,
@@ -41,7 +41,7 @@ export class DimensionValue<XDimensionType extends number | string | Date> {
             let rightPrimitive = right.primitiveValue;
 
             if (sorting === Sorting.None) {
-                return 1;
+                return 0;
             } else {
                 if (leftPrimitive > rightPrimitive) {
                     return sorting === Sorting.Asc ? 1 : -1;
@@ -55,7 +55,7 @@ export class DimensionValue<XDimensionType extends number | string | Date> {
     public static getCompareFunc2D<
         XDimensionType extends number | string | Date,
         YDimensionType extends number | string | Date,
-    >(sorting: Sorting = Sorting.Asc) {
+    >(sorting: Sorting = Sorting.None) {
         return function (
             left: [
                 DimensionValue<XDimensionType>,
@@ -73,7 +73,7 @@ export class DimensionValue<XDimensionType extends number | string | Date> {
             let rightYPrimitive = right[0].primitiveValue;
 
             if (sorting === Sorting.None) {
-                return -1;
+                return 0;
             } else {
                 if (leftXPrimitive > rightXPrimitive) {
                     return sorting === Sorting.Asc ? 1 : -1;

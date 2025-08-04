@@ -12,6 +12,7 @@ import {
     DataSetChange1D,
     DataSetChange2D,
 } from './data-set-change';
+import { Util } from './util';
 
 export class DataSet<
     TItemType,
@@ -529,11 +530,18 @@ export class DataSet<
                 let metricValue = metricFunc(element);
 
                 if (this.isArrayMetricValue(metricId)) {
-                    metricValue = (metricValue as number[]).sort(
-                        function (l, r) {
-                            return l - r;
-                        },
-                    );
+                    // metricValue = (metricValue as number[]).sort(
+                    //     function (l, r) {
+                    //         return l - r;
+                    //     },
+                    // );
+                    if (this.metrics[metricId].sorting && this.metrics[metricId].sorting !== Sorting.None) {
+                        metricValue = (metricValue as number[]).sort(
+                            Util.getCompareFunc(this.metrics[metricId].sorting),
+                        );
+                    } else {
+                        metricValue = (metricValue as number[]);
+                    }
                 }
 
                 if (
@@ -783,4 +791,6 @@ export class DataSet<
 type Metric<TItemType> = {
     func: (item: TItemType) => number | Array<number>;
     isArray?: boolean;
+    sorting?: Sorting; // Only if isArray is true, sorting value is valid.
 };
+

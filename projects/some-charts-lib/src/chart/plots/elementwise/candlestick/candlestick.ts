@@ -65,28 +65,37 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
                 context.setAttr('lineWidth', this.lineWidth);
                 context.setAttr('fillStyle', this.fill.toString());
 
+                // NOTE: the values of open, close, max, min may be negative, because
+                // the coordinates in local shape are relative to left/bottom corner
+                // so the negative coordinates is greater than positive coordinates.
                 let barWidth = shape.getAttr('barWidth');
                 let x = - barWidth / 2; // X position of the bar
-                let open = shape.getAttr('relativeOpenY');
-                let close = shape.getAttr('relativeCloseY');
-                let max = shape.getAttr('relativeHighY');
-                let min = shape.getAttr('relativeLowY');
+                let openCoord = shape.getAttr('relativeOpenY');
+                let closeCoord = shape.getAttr('relativeCloseY');
+                let maxCoord = shape.getAttr('relativeHighY');
+                let minCoord = shape.getAttr('relativeLowY');
+
+                console.debug('open:', openCoord, 'close:', closeCoord, 'max:', maxCoord, 'min:', minCoord, 'barWidth:', barWidth);
 
                 // Draw filled body (rectangle)
                 context.beginPath();
-                context.rect(x, close, barWidth, close - open); // y = top, height = difference
+                context.rect(x, openCoord, barWidth, closeCoord - openCoord); // y = top, height = difference
                 context.fill();
                 context.stroke(); // optional border around the bar
 
                 // Draw wick lines (top and bottom)
                 context.beginPath();
-                if (max > Math.max(close, open)) {
-                    context.moveTo(x, Math.max(close, open));  // high wick
-                    context.lineTo(x, max); // to top of body
+                // NOTE: since the coordinates in local shape are relative to left/bottom corner,
+                // below if statements use oposite compare to check min/max
+                // draw top wick
+                if (maxCoord < Math.min(openCoord, closeCoord)) {
+                    context.moveTo(0, maxCoord);
+                    context.lineTo(0, Math.min(openCoord, closeCoord));
                 }
-                if (min < Math.min(close, open)) {
-                    context.moveTo(x, Math.min(close, open));  // from bottom of body
-                    context.lineTo(x, min);   // to low
+                // draw bottom wick
+                if (minCoord > Math.max(closeCoord, openCoord)) {
+                    context.moveTo(0, minCoord);  
+                    context.lineTo(0, Math.max(openCoord, closeCoord));  
                 }
                 context.stroke(); // draw both lines with strokeStyle
 

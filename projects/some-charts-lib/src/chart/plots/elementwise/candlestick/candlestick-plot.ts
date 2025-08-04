@@ -15,8 +15,8 @@ import { PlotErrorBuilder } from '../../plot-error-builder';
 
 export class CandlestickPlot<
     TItemType,
-    XDimensionType extends number | Date,
-    YDimensionType extends number | undefined = undefined,
+    XDimensionType extends number | string | Date,
+    YDimensionType extends number | string | Date | undefined = undefined,
 > extends ElementwisePlot<
     CandlestickPlotOptions,
     CandlestickPlotOptionsClass,
