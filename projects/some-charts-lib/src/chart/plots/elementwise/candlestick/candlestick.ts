@@ -10,12 +10,13 @@ import { Color } from '../../../../color';
 import { Range } from '../../../../geometry';
 
 export class Candlestick extends PlotDrawableElement<Konva.Group> {
-    private readonly CandlestickShape: Konva.Shape;
+    private readonly candlestickShape: Konva.Shape;
     private readonly fill: Color | Range<Color>;
     private readonly stroke: Color;
     private readonly lineWidth: number;
     private readonly candleWidth: number;
 
+    private dataPoints: Array<NumericPoint>;
     private readonly relativeMinY: AnimatedProperty<number>;
     private readonly relativeMaxY: AnimatedProperty<number>;
 
@@ -38,10 +39,11 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
         fill: Color | Range<Color>,
         candleWidth: number
     ) {
-        let root = new Konva.Group();
+        let root = new Konva.Group({listening: true});
         let boxCenter = Candlestick.calculateStockCenter(dataPoints);
         super(metricId, boxCenter, root);
 
+        this.dataPoints = dataPoints;
         this.fill = fill;
         this.stroke = stroke;
         this.lineWidth = lineWidth
@@ -52,18 +54,23 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
         this.relativeMinY = new AnimatedProperty<number>(Math.min(...dataPoints.map(p => p.y)) - boxCenter.y);
         this.relativeMaxY = new AnimatedProperty<number>(Math.max(...dataPoints.map(p => p.y)) - boxCenter.y);
 
-        this.CandlestickShape = new Konva.Shape({
+        this.candlestickShape = new Konva.Shape({
+            name: `candlestick-${metricId}`,
+            dataPoints: dataPoints,
+            fill: this.fill.toString(),
+            stroke: this.stroke.toString(),
+            strokeWidth: this.lineWidth,
             relativeOpenY: undefined,
             relativeCloseY: undefined,
             relativeHighY: undefined,
             relativeLowY: undefined,
             candleWidth: undefined,
             sceneFunc: (context: Konva.Context, shape: Konva.Shape) => {
-                context.save();
+                // context.save();
 
-                context.setAttr('strokeStyle', this.stroke.toString());
-                context.setAttr('lineWidth', this.lineWidth);
-                context.setAttr('fillStyle', this.fill.toString());
+                // context.setAttr('strokeStyle', this.stroke.toString());
+                // context.setAttr('lineWidth', this.lineWidth);
+                // context.setAttr('fillStyle', this.fill.toString());
 
                 // NOTE: the values of open, close, max, min may be negative, because
                 // the coordinates in local shape are relative to left/bottom corner
@@ -80,9 +87,10 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
                 // Draw filled body (rectangle)
                 context.beginPath();
                 context.rect(x, openCoord, barWidth, closeCoord - openCoord); // y = top, height = difference
-                context.fill();
-                context.stroke(); // optional border around the bar
-
+                // context.fill();
+                // context.stroke(); // optional border around the bar
+                context.fillStrokeShape(shape);
+                
                 // Draw wick lines (top and bottom)
                 context.beginPath();
                 // NOTE: since the coordinates in local shape are relative to left/bottom corner,
@@ -97,13 +105,12 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
                     context.moveTo(0, minCoord);  
                     context.lineTo(0, Math.max(openCoord, closeCoord));  
                 }
-                context.stroke(); // draw both lines with strokeStyle
-
-                context.restore();
+                context.fillStrokeShape(shape);
             },
         });
 
-        root.add(this.CandlestickShape);
+        this.candlestickShape.name(`candlestick-${metricId}`);
+        root.add(this.candlestickShape);
     }
 
     public setDataPoints(
@@ -112,6 +119,11 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
         animationDuration: number = 0,
     ) {
         let boxCenter = Candlestick.calculateStockCenter(dataPoints)
+        this.dataPoints = dataPoints;
+        this.candlestickShape.setAttrs({
+            dataPoints: dataPoints
+        });
+        
         this.dataPoint.setValue(boxCenter, animate, animationDuration);
         this.relativeOpenY.setValue(dataPoints[0].y - boxCenter.y, animate, animationDuration);
         this.relativeCloseY.setValue(dataPoints[3].y - boxCenter.y, animate, animationDuration);
@@ -173,7 +185,7 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
         );
         let barWidthOnScreen = stockWidthXMax - stockWidthXMin;
 
-        this.CandlestickShape.setAttrs({
+        this.candlestickShape.setAttrs({
             relativeOpenY: relativeOpenYOnScreen,
             relativeCloseY: relativeCloseYOnScreen,
             relativeHighY: relativeHighYOnScreen,

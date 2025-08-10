@@ -188,10 +188,11 @@ export class Renderer implements IDisposable {
      * Creates layer on renderer with specified name.
      * @param {Konva.LayerConfig} layerConfig - Config of the layer.
      */
-    createLayer(layerConfig: Konva.LayerConfig) {
+    createLayer(layerConfig: Konva.LayerConfig): Konva.Layer {
         let stage = this.stage;
         let layer = new Konva.Layer(layerConfig);
         stage.add(layer);
+        return layer;
     }
 
     /**
@@ -227,5 +228,11 @@ export class Renderer implements IDisposable {
      * */
     public getLayer(layerId: string) {
         return this.stage.findOne(`#${layerId}`);
+    }
+
+    onEventCallback(
+        eventType: string, eventCallback: (event: any) => void,
+    ) {
+        this.stage.on(eventType, eventCallback);
     }
 }

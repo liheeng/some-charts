@@ -690,6 +690,14 @@ export class Chart<
         renderer.createLayers(layersConfigs);
     }
 
+    public createLayer(layerConfig: Konva.LayerConfig): Konva.Layer {
+        return this.renderer.createLayer(layerConfig);
+    }
+
+    public onEventCallback(eventType: string, eventCallback: (event: any) => void) {
+        this.renderer.onEventCallback(eventType, eventCallback);
+    }
+    
     eventCallback(
         event: EventBase<DataSetEventType | AnimationEventType>,
         options?: any,

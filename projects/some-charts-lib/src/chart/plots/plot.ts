@@ -89,7 +89,7 @@ export abstract class Plot<
                     );
                 }
             },
-            listening: false,
+            listening: true,
         });
         this.konvaDrawables = [this.shapesGroup];
 
