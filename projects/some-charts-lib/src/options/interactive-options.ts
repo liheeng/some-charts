@@ -6,7 +6,7 @@ import { TooltipOptions, TooltipOptionsDefaults } from "./tooltip-options";
 import { Skin } from './skin';
 
 export interface InteractiveOptions extends SkinOptions {
-    // skin?: Skin;
+    enableTooltip: boolean;
     /**
      * Tooltip options for the chart.
      */
@@ -19,6 +19,7 @@ export class InteractiveOptionsDefaults {
         skin: Skin = Skin.Default): InteractiveOptions {
         
         return {
+            enableTooltip: options?.enableTooltip ?? false,
             tooltip: TooltipOptionsDefaults.Instance.extendWith(
                 options?.tooltip,
                 skin,

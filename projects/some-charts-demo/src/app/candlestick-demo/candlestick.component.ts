@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {
     AxisTypes,
     CandlestickPlotOptions,
-    Chart,
     DataSet,
     Margin,
     PlotKind,
@@ -12,7 +11,7 @@ import {
 import { XY } from './model/x-y';
 import { MathHelperService } from '../services/math-helper.service';
 import Konva from 'konva';
-import { TooltipOptionsDefaults } from 'projects/some-charts-lib/src/options/tooltip-options';
+import { StockChart } from 'projects/charts/stock/stock-chart';
 
 (window as any).KonvaShapes = Konva.shapes
 
@@ -24,14 +23,6 @@ import { TooltipOptionsDefaults } from 'projects/some-charts-lib/src/options/too
 export class CandlestickAxisComponent implements OnInit {
     constructor(private mathHelperService: MathHelperService) { }
 
-    updateTooltip(tooltip: any, x: number, y: number, text: string) {
-        tooltip.getText().text(text);
-        tooltip.position({
-            x: x,
-            y: y,
-        });
-        tooltip.show();
-    }
     ngOnInit(): void {
         let dataSet = new DataSet<XY, string>(
             [
@@ -117,7 +108,7 @@ export class CandlestickAxisComponent implements OnInit {
 
         // setTimeout(updateDataSet, 4000);
 
-        let chart = new Chart<XY, string>('#chart-element', dataSet, {
+        let chart = new StockChart('#chart-element', dataSet, {
             skin: Skin.Light,
             navigation: {
                 isFitToViewModeEnabled: true,
@@ -146,112 +137,9 @@ export class CandlestickAxisComponent implements OnInit {
                     axisType: AxisTypes.NumericAxis,
                 },
             },
-        });
-
-        // Add tooltip layer
-        let plotTooltipLayer = chart.createLayer({ id: 'plot-tooltip', className: 'plot-tooltip-layer' });
-        const tooltip = new Konva.Label({
-            opacity: 0.75,
-            visible: false,
-            listening: false,
-        });
-
-        const tooltipMajoroptions = TooltipOptionsDefaults.Instance.majorOptions;
-        const tooltipSkinOptions = TooltipOptionsDefaults.Instance.extendWith(undefined, Skin.Default);
-
-        tooltip.add(
-            new Konva.Tag(tooltipSkinOptions as any)
-        );
-
-        tooltip.add(
-            new Konva.Text({
-                text: '',
-                fontFamily: tooltipSkinOptions.font?.family,
-                fontSize: tooltipSkinOptions.font?.size,
-                padding: tooltipSkinOptions.padding,
-                fill: tooltipSkinOptions.foregroundColor as string,
-            })
-        );
-        plotTooltipLayer.add(tooltip);
-
-        // chart.getLayer('chart')?.hide()
-        // chart.getLayer('label')?.hide();
-        const plotLayer = chart.getLayer('plot-layer-4');
-        // plotLayer?.moveToTop();
-
-        // chart.renderer.getStage()?.on('mouseover', (evt) => {
-        //     const shape = evt.target;
-        //     console.debug('mouseover: ', shape.name());
-        //     if (shape && shape.name() === 'candlestick-y') {  // only change opacity if it's a candlestick-y shape
-        //         shape.opacity(0.5);
-        //     }
-        //     const pos = chart.renderer.getStage().getPointerPosition();
-        //     // console.debug('mousemove ---');
-        //     // console.debug('mousemove - client X: ', evt.clientX, ', client Y: ', evt.clientY);
-        //     // console.debug('mousemove - mousePos: ', pos);
-        //     // const x = mousePos.x;
-        //     // const y = mousePos.y - 5;
-        //     // const x = evt.clientX;
-        //     // const y = evt.clientY - 5;
-        //     // const dataPoints = shape.getAttr('dataPoints');
-        //     // const text = `open: ${dataPoints[0].y}\nhigh: ${dataPoints[1].y}\nlow: ${dataPoints[2].y}\nclose: ${dataPoints[3].y}`;
-        //     if (pos) {
-        //         this.updateTooltip(tooltip, pos.x, pos.y, `target: ${evt.target.name()}`);
-        //     }
-        //     // if (pos) {
-        //     //     const hitCanvas = chart.getLayer('plot-layer-4')?.getHitCanvas()
-        //     //     const p = hitCanvas?.context.getImageData(Math.round(pos.x * 1), Math.round(pos.y * 1), 1, 1).data;
-        //     //     if (p) {
-        //     //         const p3 = p[3];
-        //     //         if (p3 === 255) {
-        //     //             const colorKey = Konva.Util._rgbToHex(p[0], p[1], p[2]);
-        //     //             const shape = Konva.shapes['#' + colorKey];
-        //     //             console.debug('mousemove - colorKey: ', colorKey);
-        //     //             console.debug('mousemove - shape: ', shape);
-        //     //         } else {
-        //     //             console.debug('mousemove - pixel: ', p);
-        //     //         }
-        //     //     }
-        //     // }
-        //     // console.debug('mousemove --- end');
-        //     // console.debug('  ');
-        // });
-
-        // chart.onEventCallback('mouseout', (evt) => {
-        //     const shape = evt.target;
-        //     if (!shape || shape.name() !== 'candlestick-y') {  // only change opacity if it's a candlestick-y shape
-        //         shape.opacity(0);
-        //         tooltip.hide();
-        //     }
-        // });
-
-        chart.onEventCallback('mousemove', (evt) => {
-            const shape = evt.target;
-            if (shape && shape.name() === 'candlestick-y') {  // only change opacity if it's a candlestick-y shape
-                const mousePos = chart.renderer.getStage().getPointerPosition();
-                if (!mousePos) {
-                    return;
-                }
-                // console.debug('mousemove ---');
-                // console.debug('mousemove - client X: ', evt.clientX, ', client Y: ', evt.clientY);
-                // console.debug('mousemove - mousePos: ', pos);
-                const x = mousePos.x;
-                const y = mousePos.y - 5;
-                // const x = evt.evt.clientX;
-                // const y = evt.evt.clientY - 5;
-                const dataPoints = shape.getAttr('dataPoints');
-                const text = `open: ${dataPoints[0].y}\nhigh: ${dataPoints[1].y}\nlow: ${dataPoints[2].y}\nclose: ${dataPoints[3].y}`;
-                // chart.renderer.getStage().container().style.cursor = 'None';
-                this.updateTooltip(tooltip, x, y, text);
-                
-            } else {
-                tooltip.hide();
-                // chart.renderer.getStage().container().style.cursor = 'Default';
-            }
-        });
-
-        chart.onEventCallback('click', function (e) {
-            console.debug('target :' + e.target.name())
+            interactive: {
+                enableTooltip: true
+            },
         });
 
     }

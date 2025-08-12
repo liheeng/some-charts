@@ -4,7 +4,7 @@ import {
     SkinOptions,
 } from './options-defaults';
 import { Skin } from './skin';
-import { TextOptions } from "dist/some-charts/types/options/common/text-options";
+import { TextOptions } from "./common/text-options";
 import { FontUnits } from "../font/font-units";
 import { Range } from '../geometry';
 import { Color } from '../color';
@@ -109,4 +109,16 @@ export class TooltipOptionsDefaults<
     };
 
     public static readonly Instance = new TooltipOptionsDefaults();
+
+    public static extendWith(
+        options: TooltipOptions | undefined,
+        skin: Skin = Skin.Default): TooltipOptions {
+    
+        const opts = TooltipOptionsDefaults.Instance.extendWith(
+                options,
+                skin,
+            ) as TooltipOptions;
+        
+        return opts? opts : {} as TooltipOptions;
+    }
 }
