@@ -7,6 +7,7 @@ import { PlotOptions, PlotOptionsDefaults } from './plot';
 import { NavigationOptions, NavigationOptionsDefaults } from './navigation';
 import { cloneDeep } from 'lodash-es';
 import { Skin } from './skin';
+import { InteractiveOptions, InteractiveOptionsDefaults } from './interactive-options';
 
 export interface ChartOptions {
     /**
@@ -41,6 +42,8 @@ export interface ChartOptions {
      *  Chart renderer options
      */
     renderer?: RendererOptions;
+
+    interactive?: InteractiveOptions;
 }
 
 export class ChartOptionsDefaults {
@@ -70,6 +73,7 @@ export class ChartOptionsDefaults {
                 options.plots?.map((plotOptions) =>
                     PlotOptionsDefaults.extendWith(plotOptions, skin),
                 ) ?? [],
+            interactive: InteractiveOptionsDefaults.extendWith(options.interactive, skin),
         } as ChartOptions;
     }
 }

@@ -12,6 +12,7 @@ import {
 import { XY } from './model/x-y';
 import { MathHelperService } from '../services/math-helper.service';
 import Konva from 'konva';
+import { TooltipOptionsDefaults } from 'projects/some-charts-lib/src/options/tooltip-options';
 
 (window as any).KonvaShapes = Konva.shapes
 
@@ -155,28 +156,20 @@ export class CandlestickAxisComponent implements OnInit {
             listening: false,
         });
 
+        const tooltipMajoroptions = TooltipOptionsDefaults.Instance.majorOptions;
+        const tooltipSkinOptions = TooltipOptionsDefaults.Instance.extendWith(undefined, Skin.Default);
+
         tooltip.add(
-            new Konva.Tag({
-                fill: 'black',
-                pointerDirection: 'down',
-                pointerWidth: 10,
-                pointerHeight: 10,
-                lineJoin: 'round',
-                shadowColor: 'black',
-                shadowBlur: 10,
-                shadowOffsetX: 10,
-                shadowOffsetY: 10,
-                shadowOpacity: 0.5,
-            })
+            new Konva.Tag(tooltipSkinOptions as any)
         );
 
         tooltip.add(
             new Konva.Text({
                 text: '',
-                fontFamily: 'Calibri',
-                fontSize: 18,
-                padding: 5,
-                fill: 'white',
+                fontFamily: tooltipSkinOptions.font?.family,
+                fontSize: tooltipSkinOptions.font?.size,
+                padding: tooltipSkinOptions.padding,
+                fill: tooltipSkinOptions.foregroundColor as string,
             })
         );
         plotTooltipLayer.add(tooltip);
@@ -235,28 +228,32 @@ export class CandlestickAxisComponent implements OnInit {
         chart.onEventCallback('mousemove', (evt) => {
             const shape = evt.target;
             if (shape && shape.name() === 'candlestick-y') {  // only change opacity if it's a candlestick-y shape
-                // const pos = chart.renderer.getStage().getPointerPosition();
+                const mousePos = chart.renderer.getStage().getPointerPosition();
+                if (!mousePos) {
+                    return;
+                }
                 // console.debug('mousemove ---');
                 // console.debug('mousemove - client X: ', evt.clientX, ', client Y: ', evt.clientY);
                 // console.debug('mousemove - mousePos: ', pos);
-                // const x = mousePos.x;
-                // const y = mousePos.y - 5;
-                const x = evt.evt.clientX;
-                const y = evt.evt.clientY - 5;
+                const x = mousePos.x;
+                const y = mousePos.y - 5;
+                // const x = evt.evt.clientX;
+                // const y = evt.evt.clientY - 5;
                 const dataPoints = shape.getAttr('dataPoints');
                 const text = `open: ${dataPoints[0].y}\nhigh: ${dataPoints[1].y}\nlow: ${dataPoints[2].y}\nclose: ${dataPoints[3].y}`;
-                chart.renderer.getStage().container().style.cursor = 'None';
+                // chart.renderer.getStage().container().style.cursor = 'None';
                 this.updateTooltip(tooltip, x, y, text);
                 
             } else {
                 tooltip.hide();
-                chart.renderer.getStage().container().style.cursor = 'Default';
+                // chart.renderer.getStage().container().style.cursor = 'Default';
             }
         });
 
         chart.onEventCallback('click', function (e) {
             console.debug('target :' + e.target.name())
         });
+
     }
 
 }
