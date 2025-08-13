@@ -77,7 +77,7 @@ export class StockChart extends Chart<XY, string> {
                 const x = mousePos.x;
                 const y = mousePos.y - 5;
                 const dataPoints = shape.getAttr('dataPoints');
-                const text = `open: ${dataPoints[0].y}\nhigh: ${dataPoints[1].y}\nlow: ${dataPoints[2].y}\nclose: ${dataPoints[3].y}`;
+                const text = `open:  ${dataPoints[0].y}\nhigh:  ${dataPoints[1].y}\nlow:   ${dataPoints[2].y}\nclose: ${dataPoints[3].y}`;
                 tooltip.showAt(x, y, text);
                 
             } else {

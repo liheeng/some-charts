@@ -66,12 +66,7 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
             relativeLowY: undefined,
             candleWidth: undefined,
             sceneFunc: (context: Konva.Context, shape: Konva.Shape) => {
-                // context.save();
-
-                // context.setAttr('strokeStyle', this.stroke.toString());
-                // context.setAttr('lineWidth', this.lineWidth);
-                // context.setAttr('fillStyle', this.fill.toString());
-
+                
                 // NOTE: the values of open, close, max, min may be negative, because
                 // the coordinates in local shape are relative to left/bottom corner
                 // so the negative coordinates is greater than positive coordinates.
@@ -87,8 +82,6 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
                 // Draw filled body (rectangle)
                 context.beginPath();
                 context.rect(x, openCoord, barWidth, closeCoord - openCoord); // y = top, height = difference
-                // context.fill();
-                // context.stroke(); // optional border around the bar
                 context.fillStrokeShape(shape);
                 
                 // Draw wick lines (top and bottom)
@@ -105,6 +98,20 @@ export class Candlestick extends PlotDrawableElement<Konva.Group> {
                     context.moveTo(0, minCoord);  
                     context.lineTo(0, Math.max(openCoord, closeCoord));  
                 }
+                context.fillStrokeShape(shape);
+            },
+            // Separately hitFunc is needed to handle whole scope of the candlestick (including wicks)
+            // for mouse events (like hover, click)
+            hitFunc: (context: Konva.Context, shape: Konva.Shape) => {
+                // A simple implementation of hit detection
+                let barWidth = shape.getAttr('barWidth');
+                let x = - barWidth / 2; // X position of the bar
+                let maxCoord = shape.getAttr('relativeHighY');
+                let minCoord = shape.getAttr('relativeLowY');
+
+                // Check if the point is within the rectangle (body)
+                context.beginPath();
+                context.rect(x, maxCoord, barWidth, minCoord - maxCoord);
                 context.fillStrokeShape(shape);
             },
         });
