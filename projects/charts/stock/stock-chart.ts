@@ -44,28 +44,37 @@ export const StockChartOptions = {
     },
 };
 
-export const PLOT_TOOLTIP_LAYRE_ID = 'plot-tooltip';
-export const PLOT_TOOLTIP_LAYER_CLASSNAME = 'plot-tooltip-layer';
+export const INTERACTIVE_LAYER_ID = 'interactive-layer';
+export const INTERACTIVE_LAYER_CLASSNAME = 'interactive-layer';
 export class StockChart extends Chart<XY, string> {
     protected tooltip?: Tooltip;
 
-    protected plotTooltipLayer?: Konva.Layer;
+    protected interactiveLayer?: Konva.Layer;
 
     constructor(containerID: string, dataSet: DataSet<XY, string>, options: ChartOptions= StockChartOptions) {
-        super(containerID, dataSet, options);
-        this.initTooltip(options.interactive);
+        super(containerID, dataSet, options);  
+        this.init(options);
     }
     
+    protected init(options: ChartOptions): void {
+        this.interactiveLayer = this.createInteractiveLayer(options);  
+        this.initTooltip(options.interactive);
+    }
+
+    protected createInteractiveLayer(options: ChartOptions) : Konva.Layer | undefined {
+        return this.createLayer({ id: INTERACTIVE_LAYER_ID, className: INTERACTIVE_LAYER_CLASSNAME});
+    }
+
     protected initTooltip(interactiveOpts?: InteractiveOptions): void {
         // Override to customize tooltip initialization if needed
         if (!interactiveOpts || interactiveOpts.enableTooltip !== true) {
             return;
         }
-        this.plotTooltipLayer = this.createLayer({ id: PLOT_TOOLTIP_LAYRE_ID, className: PLOT_TOOLTIP_LAYER_CLASSNAME});
+        
         const tooltip = new Tooltip(interactiveOpts.tooltip? interactiveOpts.tooltip 
                 : TooltipOptionsDefaults.Instance.extendWith(undefined));
         this.tooltip = tooltip;
-        this.plotTooltipLayer.add(this.tooltip);
+        this.interactiveLayer?.add(this.tooltip);
 
         this.onEventCallback('mousemove', (evt) => {
             const shape = evt.target;
