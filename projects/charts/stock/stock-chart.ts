@@ -95,6 +95,9 @@ export class StockChart extends Chart<XY, string> {
                     this.crossline?.hide();
                 }
         });
+        this.onEventCallback('mouseout', (evt) => {
+            this.crossline?.hide();
+        });
     }
 
     protected initTooltip(interactiveOpts?: InteractiveOptions): void {
@@ -124,6 +127,9 @@ export class StockChart extends Chart<XY, string> {
             } else {
                 tooltip.hide();
             }
+        });
+        this.onEventCallback('mouseout', (evt) => {
+            this.tooltip?.hide();
         });
     }
 }
