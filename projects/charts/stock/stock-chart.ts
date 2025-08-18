@@ -12,6 +12,9 @@ import { TooltipOptions, TooltipOptionsDefaults } from "../../some-charts-lib/sr
 import { Tooltip } from "../../some-charts-lib/src/components/tooltip/tooltip";
 import Konva from 'konva'
 import { InteractiveOptions } from "projects/some-charts-lib/src/options/interactive-options";
+import { CrossLine } from "projects/some-charts-lib/src/components/crossline/crossline";
+import { CrosslineOptionsDefaults } from "projects/some-charts-lib/src/options/crossline-options";
+import { NumericDataRect } from "projects/some-charts-lib/src";
 
 export const StockChartOptions = {
     skin: Skin.Light,
@@ -28,10 +31,8 @@ export const StockChartOptions = {
             metric: {
                 id: 'y',
                 caption: 'Price',
-                color: '#D24E4D',
-            },
-            fill: '#D24E4D',
-            animate: false,
+                color: '#D24E4D'
+            }
         } as CandlestickPlotOptions,
     ],
     axes: {
@@ -49,6 +50,8 @@ export const INTERACTIVE_LAYER_CLASSNAME = 'interactive-layer';
 export class StockChart extends Chart<XY, string> {
     protected tooltip?: Tooltip;
 
+    protected crossline?: CrossLine;
+
     protected interactiveLayer?: Konva.Layer;
 
     constructor(containerID: string, dataSet: DataSet<XY, string>, options: ChartOptions= StockChartOptions) {
@@ -59,10 +62,39 @@ export class StockChart extends Chart<XY, string> {
     protected init(options: ChartOptions): void {
         this.interactiveLayer = this.createInteractiveLayer(options);  
         this.initTooltip(options.interactive);
+        this.initCrossline(options.interactive);
     }
 
     protected createInteractiveLayer(options: ChartOptions) : Konva.Layer | undefined {
         return this.createLayer({ id: INTERACTIVE_LAYER_ID, className: INTERACTIVE_LAYER_CLASSNAME});
+    }
+
+    protected initCrossline(interactiveOpts?: InteractiveOptions): void {
+        // Override to customize crossline initialization if needed
+        if (!interactiveOpts || interactiveOpts.enableCrossline !== true) {
+            return;
+        }
+
+        const crossline = new CrossLine(interactiveOpts.crossline? interactiveOpts.crossline
+            : CrosslineOptionsDefaults.Instance.extendWith(undefined)
+        );
+        this.crossline = crossline;
+        this.interactiveLayer?.add(this.crossline);
+
+        this.onEventCallback('mousemove', (evt) => {
+                const mousePos = this.renderer.getStage().getPointerPosition();
+                const gridRect = this.screenRect;
+                if (mousePos && gridRect && 
+                    mousePos.x > gridRect.minX && 
+                    mousePos.y > gridRect.minY && 
+                    mousePos.x < gridRect.maxX && 
+                    mousePos.y < gridRect.maxY) {
+                    this.crossline?.showAt(mousePos, gridRect);
+                    return
+                } else {
+                    this.crossline?.hide();
+                }
+        });
     }
 
     protected initTooltip(interactiveOpts?: InteractiveOptions): void {

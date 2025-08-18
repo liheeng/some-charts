@@ -1,6 +1,5 @@
 import Konva from 'konva';
 import { TooltipOptions, TooltipOptionsDefaults } from '../../options/tooltip-options';
-import { Skin } from '../../options/skin';
 
 export class Tooltip extends Konva.Label {
     protected options: TooltipOptions;

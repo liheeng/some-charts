@@ -7,3 +7,4 @@
 * Drag&drop action to move the X-axis to forward or backward, view previous or later stock data, has same effects with horizontal scrolling. 
 * Add stock chart widget.(Done, 2025-8-11)
 * Add tooltip commponent.(Done, 2025-8-11)
+* Add crossline on chart grid. (Done, 2025-8-18)

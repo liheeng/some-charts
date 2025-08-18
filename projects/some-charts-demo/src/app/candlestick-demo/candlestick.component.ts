@@ -138,6 +138,7 @@ export class CandlestickAxisComponent implements OnInit {
                 },
             },
             interactive: {
+                enableCrossline: true,
                 enableTooltip: true
             },
         });

@@ -161,7 +161,11 @@ export class Chart<
     private horizontalAxis?: AxisBase<any, any>;
     private verticalAxis?: AxisBase<any, any>;
 
-    private chartGrid: Grid;
+    private _chartGrid: Grid;
+
+    public get chartGrid(): Grid {
+        return this._chartGrid;
+    }
 
     private static currentChartId: number = 1;
 
@@ -280,7 +284,7 @@ export class Chart<
             this.options?.axes!.vertical,
         );
 
-        this.chartGrid = new Grid(this.location, this.size, this.options.grid);
+        this._chartGrid = new Grid(this.location, this.size, this.options.grid);
 
         this.plots = [];
 
@@ -319,7 +323,7 @@ export class Chart<
             this.verticalAxis.placeOnChart(this as Chart);
         }
 
-        this.chartGrid.placeOnChart(this as Chart);
+        this._chartGrid.placeOnChart(this as Chart);
 
         for (let plot of this.plots) {
             plot.attach(this._renderer);
@@ -497,9 +501,9 @@ export class Chart<
             verticalAxisTicks = this.verticalAxis.getMajorTicksScreenCoords();
         }
 
-        this.chartGrid.update(gridLocation, gridSize);
+        this._chartGrid.update(gridLocation, gridSize);
 
-        this.chartGrid.setLinesCoords(
+        this._chartGrid.setLinesCoords(
             verticalAxisTicks ?? [],
             horizontalAxisTicks ?? [],
         );

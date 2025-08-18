@@ -106,6 +106,29 @@ export class TooltipOptionsDefaults<
             shadowOffsetY: 10,
             shadowOpacity: 0.5,
         } as TooltipSkinOptions,
+        [Skin.Light]: {
+            opacity: 1,
+            fill: this.defaultSkinConsts.backgroundColor,
+            stroke: this.defaultSkinConsts.outerBorderColor || this.defaultSkinConsts.foregroundColor,
+            strokeWidth: 1,
+            foregroundColor: this.defaultSkinConsts.foregroundColor,
+            font: {
+                size: 16,
+                units: FontUnits.Points,
+                family: this.defaultSkinConsts.fontFamily,
+            },
+            padding: 5,
+
+            pointerDirection: 'down',
+            pointerWidth: 10,
+            pointerHeight: 10,
+            lineJoin: 'round',
+            shadowColor: this.defaultSkinConsts.backgroundColor,
+            shadowBlur: 10,
+            shadowOffsetX: 10,
+            shadowOffsetY: 10,
+            shadowOpacity: 0.5,
+        } as TooltipSkinOptions,
     };
 
     public static readonly Instance = new TooltipOptionsDefaults();
