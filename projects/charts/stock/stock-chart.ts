@@ -15,6 +15,8 @@ import { InteractiveOptions } from "projects/some-charts-lib/src/options/interac
 import { CrossLine } from "projects/some-charts-lib/src/components/crossline/crossline";
 import { CrosslineOptionsDefaults } from "projects/some-charts-lib/src/options/crossline-options";
 import { NumericDataRect } from "projects/some-charts-lib/src";
+import { SvgCursor } from "projects/common/svg-cursor";
+import { CursorManager, CursorType } from "projects/common/cursor-manager";
 
 export const StockChartOptions = {
     skin: Skin.Light,
@@ -55,7 +57,8 @@ export class StockChart extends Chart<XY, string> {
     protected interactiveLayer?: Konva.Layer;
 
     constructor(containerID: string, dataSet: DataSet<XY, string>, options: ChartOptions= StockChartOptions) {
-        super(containerID, dataSet, options);  
+        super(containerID, dataSet, options); 
+        CursorManager.Init(this.renderer.getStage().container());
         this.init(options);
     }
     
@@ -90,13 +93,17 @@ export class StockChart extends Chart<XY, string> {
                     mousePos.x < gridRect.maxX && 
                     mousePos.y < gridRect.maxY) {
                     this.crossline?.showAt(mousePos, gridRect);
+                    // this.renderer.getStage().container().style.cursor = 'crosshair';
+                    CursorManager.getInstance().setCursor(CursorType.Cross);
                     return
                 } else {
                     this.crossline?.hide();
+                    CursorManager.getInstance().resetCursor();
                 }
         });
         this.onEventCallback('mouseout', (evt) => {
             this.crossline?.hide();
+            CursorManager.getInstance().resetCursor();
         });
     }
 
@@ -123,13 +130,15 @@ export class StockChart extends Chart<XY, string> {
                 const dataPoints = shape.getAttr('dataPoints');
                 const text = `open:  ${dataPoints[0].y}\nhigh:  ${dataPoints[1].y}\nlow:   ${dataPoints[2].y}\nclose: ${dataPoints[3].y}`;
                 tooltip.showAt(x, y, text);
-                
+                CursorManager.getInstance().setCursor(CursorType.Tooltip);
             } else {
                 tooltip.hide();
+                CursorManager.getInstance().resetCursor();
             }
         });
         this.onEventCallback('mouseout', (evt) => {
             this.tooltip?.hide();
+            CursorManager.getInstance().resetCursor();
         });
     }
 }

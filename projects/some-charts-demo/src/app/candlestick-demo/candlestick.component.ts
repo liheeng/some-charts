@@ -43,19 +43,51 @@ export class CandlestickAxisComponent implements OnInit {
                     y: [15, 20, 10, 12],
                 },
                 {
-                    x: new Date(2024, 1, 2),
+                    x: new Date(2023, 1, 12),
                     y: [10, 15, 5, 12], // open, high, low, close
                 },
                 {
-                    x: new Date(2024, 1, 5),
+                    x: new Date(2023, 1, 13),
                     y: [20, 25, 15, 18], // open, high, low, close
                 },
                 {
-                    x: new Date(2025, 1, 8),
+                    x: new Date(2023, 1, 14),
                     y: [30, 35, 25, 28],
                 },
                 {
-                    x: new Date(2025, 1, 10),
+                    x: new Date(2023, 1, 15),
+                    y: [15, 20, 10, 12],
+                },
+                 {
+                    x: new Date(2023, 2, 2),
+                    y: [10, 15, 5, 12], // open, high, low, close
+                },
+                {
+                    x: new Date(2023, 2, 5),
+                    y: [20, 25, 15, 18], // open, high, low, close
+                },
+                {
+                    x: new Date(2023, 2, 8),
+                    y: [30, 35, 25, 28],
+                },
+                {
+                    x: new Date(2023, 2, 10),
+                    y: [15, 20, 10, 12],
+                },
+                {
+                    x: new Date(2023, 2, 12),
+                    y: [10, 15, 5, 12], // open, high, low, close
+                },
+                {
+                    x: new Date(2023, 2, 13),
+                    y: [20, 25, 15, 18], // open, high, low, close
+                },
+                {
+                    x: new Date(2023, 2, 14),
+                    y: [30, 35, 25, 28],
+                },
+                {
+                    x: new Date(2023, 2, 15),
                     y: [15, 20, 10, 12],
                 },
             ],
