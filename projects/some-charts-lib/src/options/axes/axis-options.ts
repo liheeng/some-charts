@@ -29,6 +29,8 @@ export interface AxisSkin extends SkinOptions {
      * Axis background color
      */
     backgroundColor?: string;
+
+    opacity?: number;
     /**
      * Axis font
      */
@@ -60,6 +62,7 @@ export class AxisOptionsDefaults extends OptionsDefaults<
         [Skin.Default]: {
             foregroundColor: this.defaultSkinConsts.foregroundColor,
             backgroundColor: this.defaultSkinConsts.backgroundColor,
+            opacity: 1,
             font: {
                 size: 13,
                 family: this.defaultSkinConsts.fontFamily,
@@ -71,6 +74,7 @@ export class AxisOptionsDefaults extends OptionsDefaults<
         [Skin.Dark]: {
             foregroundColor: this.darkSkinConsts.foregroundColor,
             backgroundColor: this.darkSkinConsts.backgroundColor,
+            opacity: 1,
         },
     };
 

@@ -100,10 +100,11 @@ export abstract class AxisBase<
         this.minorTicksGenerator = this.createMinorTicksGenerator();
 
         this.borderShape = new Konva.Shape({
+            ...this.options,
             location: this.location,
             size: this.size,
             sceneFunc: (context, shape) => {
-                context.save();
+                // context.save();
 
                 context.setAttr('fillStyle', this.options.backgroundColor);
                 context.setAttr('strokeStyle', this.options.foregroundColor);
@@ -132,7 +133,7 @@ export abstract class AxisBase<
                     roundedHeight,
                 );
 
-                context.restore();
+                // context.restore();
             },
         });
 

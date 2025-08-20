@@ -164,6 +164,8 @@ export class CandlestickAxisComponent implements OnInit {
             axes: {
                 horizontal: {
                     axisType: AxisTypes.LabeledAxis,
+                    backgroundColor: '#4d9e50ff',
+                    opacity: 0.2,
                 },
                 vertical: {
                     axisType: AxisTypes.NumericAxis,
