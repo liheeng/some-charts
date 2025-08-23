@@ -46,7 +46,7 @@ export abstract class MajorTimeUnitTicksGenerator extends MajorTicksGenerator<Da
                 break;
             case TimeUnit.Hours:
                 tickSpacing = this.chooseTicksSpacingOutOfOptions(
-                    [1, 2, 3, 4, 6, 12, 24],
+                    [1, 2, 3, 4, 6, 8, 12, 16, 24],
                     niceDelta,
                     ticksCount,
                 );
